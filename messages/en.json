@@ -1,0 +1,95 @@
+{
+    "error": {
+    "pageNotFound": "Page Not Found",
+    "pageNotFoundDesc": "Sorry, the page you are looking for does not exist or has been moved.",
+      "backHome" : "Go To Home"
+  },
+   "Navbar": {
+    "home": "Home",
+    "about": "About Us",
+    "services": "Services",
+    "projects": "Projects",
+    "partners": "Partners",
+    "team": "Our Team",
+    "contact": "Contact Us",
+    "downloadProfile": "Download Profile"
+  } ,
+    "ourExperience" : {
+  "title": "Our Experience and Business Understanding is the Reason for Our Success"
+  },
+   "OurServices": {
+    "title": "Our Services",
+    "subtitle": "We offer a range of services that our company provides to our valued clients",
+    "viewMore": "View More"
+  },
+  "OurProjects": {
+    "title": "Projects",
+    "subtitle": "We present to you a collection of projects carried out by our company",
+    "description": "In Lorem Ipsum text, we understand that design goes beyond creativity; it’s a thoughtful balance between form and function, ensuring visual harmony.",
+    "moreProjects": "More Projects"
+  },
+"ContactUs": {
+    "title": "Contact Us",
+    "subtitle": "We are waiting for all your inquiries 24/7",
+    "whatsapp_title": "WhatsApp Number",
+    "email_title": "Email Address"
+  },
+  "ContactUsForm": {
+   "name": "Name",
+    "phone": "Phone",
+    "email": "Email",
+    "message_type": "Message Type",
+    "message": "Message",
+    "send": "Send",
+    "loading": "Loading...",
+    "load_error": "Error loading message types",
+    "errors": {
+      "name_required": "Name is required",
+      "phone_invalid": "Invalid phone number",
+      "email_invalid": "Invalid email address",
+      "message_type_required": "Please select a message type",
+      "message_required": "Message is required"
+    },
+    "success_message": "Message sent successfully!",
+    "error_message": "Error sending the message"
+  },
+  "footer": {
+    "about": "Qeema & Ibtekar Al Emar Contracting Company – Executing all construction and finishing works with the highest standards of quality and precision",
+    "quickLinks": "Quick Links:",
+    "followUs": "Follow us on:",
+    "links1": {
+      "aboutUs": "About Us",
+      "partners": "Our Partners",
+      "contact": "Contact Us",
+      "services": "Our Services"
+    },
+    "links2": {
+      "projects": "Our Projects",
+      "our-team": "Our-team",
+      "numbers": "Contact Numbers"
+    }
+  },
+  "about" : {
+    "title" : "About Us"
+  },
+   "price": {
+    "supportTitle": "We are here to serve you:",
+    "supportText": "If you have any inquiries or need more details about any of our legal services, do not hesitate to contact us through the available communication channels on our website. We welcome any questions and will always be ready to provide you with full support."
+  },
+   "aboutInfo": {
+    "ourVision": "Our Vision",
+    "ourGoals": "Our Goals",
+    "ourMessages": "Our Message"
+  },
+  "partners": {
+    "title": "Our Partners",
+    "subtitle": "We are proud to collaborate with our trusted partners",
+     "success_partners": "Success Partners",
+  "success_partners_subtitle": "We present to you the success partners of our company since the beginning"
+  },
+  "our-team" : {
+      "our_team": "Our Team",
+  "our_team_subtitle": "At Qima & Ibtekhar Al-Emar, we believe that the strength of our projects begins with our team, which includes engineers and specialists in design, supervision, project management, and the implementation of mechanical, electrical, and medical gas systems."
+  }
+
+}
