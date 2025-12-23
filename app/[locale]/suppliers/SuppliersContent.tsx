@@ -1,4 +1,3 @@
-// app/suppliers/SuppliersContent.tsx
 'use client';
 
 import { useState } from 'react';
@@ -8,7 +7,6 @@ import SuppliersTable from './SuppliersTable';
 import AddSupplierModal from './AddSupplierModal';
 import EditSupplierModal from './EditSupplierModal';
 import DeleteSupplierModal from './DeleteSupplierModal';
-
 
 interface SuppliersContentProps {
   initialSuppliers: any[];
@@ -23,11 +21,17 @@ interface SuppliersContentProps {
 
 export default function SuppliersContent({ initialSuppliers, initialStats }: SuppliersContentProps) {
   const [suppliers, setSuppliers] = useState(initialSuppliers);
+  const [searchTerm, setSearchTerm] = useState(''); // ← أضفنا
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isViewModalOpen, setViewModalOpen] = useState(false);
   const [selectedSupplier, setSelectedSupplier] = useState<any>(null);
+
+  // بيانات بعد تطبيق البحث
+  const filteredSuppliers = suppliers.filter(supplier =>
+    supplier.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // عرض المورد
   const handleViewSupplier = (supplier: any) => {
@@ -66,7 +70,7 @@ export default function SuppliersContent({ initialSuppliers, initialStats }: Sup
 
   // تعديل مورد
   const handleUpdateSupplier = (updatedSupplier: any) => {
-    setSuppliers(suppliers.map(supplier => 
+    setSuppliers(suppliers.map(supplier =>
       supplier.id === updatedSupplier.id ? updatedSupplier : supplier
     ));
     alert('تم تعديل المورد بنجاح! ✅');
@@ -80,18 +84,24 @@ export default function SuppliersContent({ initialSuppliers, initialStats }: Sup
     }
   };
 
-
   return (
     <div className="p-6 min-h-screen">
-        <div className="mb-6">
-      <h1 className="text-3xl font-bold text-gray-800">الموردين</h1>
-      <p className="text-gray-600 mt-2">إدارة قاعدة مورديك ومتابعة المشتريات والمدفوعات</p>
-    </div>
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">الموردين</h1>
+        <p className="text-gray-600 mt-2">إدارة قاعدة مورديك ومتابعة المشتريات والمدفوعات</p>
+      </div>
+
       <SuppliersStats stats={initialStats} />
-      <SuppliersFilters onAdd={() => setAddModalOpen(true)} />
-      
+
+      {/* تمرير searchTerm و setSearchTerm */}
+      <SuppliersFilters
+        onAdd={() => setAddModalOpen(true)}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+      />
+
       <SuppliersTable 
-        suppliers={suppliers}
+        suppliers={filteredSuppliers} // ← استخدمنا البيانات المفلترة
         onView={handleViewSupplier}
         onEdit={handleEditSupplier}
         onDelete={handleDeleteSupplier}
@@ -103,22 +113,20 @@ export default function SuppliersContent({ initialSuppliers, initialStats }: Sup
         onClose={() => setAddModalOpen(false)}
         onAdd={handleAddSupplier}
       />
-      
+
       <EditSupplierModal
         isOpen={isEditModalOpen}
         onClose={() => setEditModalOpen(false)}
         supplier={selectedSupplier}
         onEdit={handleUpdateSupplier}
       />
-      
+
       <DeleteSupplierModal
         isOpen={isDeleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
         supplier={selectedSupplier}
         onDelete={handleRemoveSupplier}
       />
-      
-      
     </div>
   );
 }

@@ -1,16 +1,40 @@
-// app/suppliers/page.tsx
 import SuppliersContent from './SuppliersContent';
-import { suppliersData } from './suppliers-data';
+import apiServiceCall from '@/lib/apiServiceCall';
 
-export default function SuppliersPage() {
-  // حساب الإحصائيات على السيرفر
+export default async function SuppliersPage() {
+  // جلب البيانات من API
+  const response = await apiServiceCall({
+    url: 'suppliers', // endpoint الموردين
+    method: 'GET',
+  });
+
+  const suppliersData = response?.data || [];
+
+  // تحويل البيانات لتنسيق يناسب الـ table
+  const suppliers = suppliersData.map((supplier: any) => ({
+    id: supplier.id,
+    name: supplier.name,
+    email: supplier.email,
+    phone: supplier.contact_phone,
+    secondaryPhone: supplier.secondary_phone,
+    company_name: supplier.company_name,
+    category_name: supplier.category_name,
+    balance: Number(supplier.wallet),
+    credit_limit: Number(supplier.credit_limit),
+    totalPurchases: Number(supplier.shopping),
+    status: supplier.is_active ? 'active' : 'inactive',
+    createdAt: supplier.created_at?.split('T')[0],
+    updatedAt: supplier.updated_at,
+  }));
+
+  // إحصائيات
   const stats = {
-    total: suppliersData.length,
-    active: suppliersData.filter(s => s.status === 'active').length,
-    totalBalance: suppliersData.reduce((sum, s) => sum + s.balance, 0),
-    totalCredit: suppliersData.reduce((sum, s) => sum + s.creditLimit, 0),
-    totalPurchases: suppliersData.reduce((sum, s) => sum + s.totalPurchases, 0),
+    total: suppliers.length,
+    active: suppliers.filter(s => s.status === 'active').length,
+    totalBalance: suppliers.reduce((sum, s) => sum + s.balance, 0),
+    totalCredit: suppliers.reduce((sum, s) => sum + s.credit_limit, 0),
+    totalPurchases: suppliers.reduce((sum, s) => sum + s.totalPurchases, 0),
   };
 
-  return <SuppliersContent initialSuppliers={suppliersData} initialStats={stats} />;
+  return <SuppliersContent initialSuppliers={suppliers} initialStats={stats} />;
 }

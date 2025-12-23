@@ -1,19 +1,47 @@
-// app/customers/page.tsx
 import CustomersContent from './CustomersContent';
-import { customersData } from './customers-data';
+import apiServiceCall from '@/lib/apiServiceCall';
 
-export default function CustomersPage() {
-  // حساب الإحصائيات على السيرفر
+export default async function CustomersPage() {
+  const response = await apiServiceCall({
+    url: 'users',
+    method: 'GET',
+  });
+
+  const users = response?.data || [];
+
+  // تحويل شكل البيانات لو محتاج
+  const customers = users.map((user: any) => ({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    secondaryPhone: user.secondary_phone,
+    identityNumber: user.identity_number,
+    taxNumber: user.tax_number,
+    hall: user.hall,
+    balance: Number(user.wallet),
+    status: user.status === 1 ? 'active' : 'inactive',
+    createdAt: user.created_at?.split('T')[0],
+    updatedAt: user.updated_at,
+    type: 'customer', // لو عندك supplier بعدين
+  }));
+
+  // حساب الإحصائيات
   const stats = {
-    total: customersData.length,
-    customers: customersData.filter(c => c.type === 'customer').length,
-    suppliers: customersData.filter(c => c.type === 'supplier').length,
-    active: customersData.filter(c => c.status === 'active').length,
-    totalBalance: customersData.reduce((sum, c) => sum + c.balance, 0),
-    totalCredit: customersData.reduce((sum, c) => sum + c.creditLimit, 0),
-    totalPurchases: customersData.reduce((sum, c) => sum + (c.totalPurchases || 0), 0),
-    averageRating: parseFloat((customersData.reduce((sum, c) => sum + (c.rating || 0), 0) / customersData.filter(c => c.rating).length).toFixed(1))
+    total: customers.length,
+    customers: customers.length,
+    suppliers: 0,
+    active: customers.filter(c => c.status === 'active').length,
+    totalBalance: customers.reduce((sum, c) => sum + c.balance, 0),
+    totalCredit: 0,
+    totalPurchases: 0,
+    averageRating: 0,
   };
 
-  return <CustomersContent initialCustomers={customersData} initialStats={stats} />;
+  return (
+    <CustomersContent
+      initialCustomers={customers}
+      initialStats={stats}
+    />
+  );
 }

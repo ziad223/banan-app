@@ -1,16 +1,6 @@
-// app/customers/components/CustomersTable.tsx
-'use client';
-
-import { FaEye, FaFileInvoiceDollar, FaTrashAlt } from 'react-icons/fa';
+import { FaEye, FaTrashAlt } from 'react-icons/fa';
 import { CiEdit } from 'react-icons/ci';
 import DataTable from '@/components/shared/reusableComponents/Table';
-
-interface CustomersTableProps {
-  customers: any[];
-  onView: (customer: any) => void;
-  onEdit: (customer: any) => void;
-  onDelete: (customer: any) => void;
-}
 
 export default function CustomersTable({ customers, onView, onEdit, onDelete }: CustomersTableProps) {
   const columns = [
@@ -33,20 +23,6 @@ export default function CustomersTable({ customers, onView, onEdit, onDelete }: 
         </div>
       )
     },
-    // { 
-    //   key: "type",
-    //   header: "النوع",
-    //   sortable: true,
-    //   render: (_: any, row: any) => (
-    //     <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-    //       row.type === 'customer' 
-    //         ? 'bg-blue-100 text-blue-800'
-    //         : 'bg-purple-100 text-purple-800'
-    //     }`}>
-    //       {row.type === 'customer' ? 'عميل' : 'مورد'}
-    //     </span>
-    //   )
-    // },
     { 
       key: "phone",
       header: "الهاتف",
@@ -87,10 +63,15 @@ export default function CustomersTable({ customers, onView, onEdit, onDelete }: 
     },
   ];
 
-  // Actions لكل صف
   const actions = (row: any) => (
     <div className="flex gap-2 justify-center">
-      
+      <button
+        onClick={() => onView(row)}
+        className="text-white bg-gradient-to-r from-blue-500 to-indigo-600 w-[30px] h-[30px] rounded-md flex items-center justify-center shadow-md hover:scale-110 transition-transform"
+        title="عرض"
+      >
+        <FaEye size={15} />
+      </button>
 
       <button
         onClick={() => onEdit(row)}

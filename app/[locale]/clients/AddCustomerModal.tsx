@@ -1,7 +1,10 @@
-// app/customers/components/AddCustomerModal.tsx
 'use client';
 
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import apiServiceCall from '@/lib/apiServiceCall';
+import CustomSelect from '@/components/shared/reusableComponents/CustomSelect';
 
 interface AddCustomerModalProps {
   isOpen: boolean;
@@ -9,134 +12,147 @@ interface AddCustomerModalProps {
   onAdd: (customer: any) => void;
 }
 
-export default function AddCustomerModal({ isOpen, onClose, onAdd }: AddCustomerModalProps) {
-  const [formData, setFormData] = useState({
-    name: '',
-    nationalId: '',
-    phone: '',
-    altPhone: '',
-    hall: 'القاعة الرئيسية',
-    taxNo: ''
+type FormValues = {
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+  secondary_phone?: string;
+  identity_number?: string;
+  wallet?: string;
+  tax_number?: string;
+  hall: string;
+};
+
+export default function AddCustomerModal({
+  isOpen,
+  onClose,
+  onAdd,
+}: AddCustomerModalProps) {
+  const {
+    control,
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
+    defaultValues: {
+      hall: '',
+      wallet: '0',
+    },
   });
+
+  const hallsOptions = [
+    { value: '1', label: 'القاعة الرئيسية' },
+    { value: '2', label: 'القاعة الفرعية' },
+  ];
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: FormValues) =>
+      apiServiceCall({
+        url: 'users',
+        method: 'POST',
+        body: data,
+      }),
+    onSuccess: (res) => {
+      toast.success(res.message || 'تم إضافة العميل بنجاح');
+      onAdd(res.data);
+      reset();
+      onClose();
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || 'حدث خطأ أثناء الإضافة');
+    },
+  });
+
+  const onSubmit = (data: FormValues) => {
+    mutate(data);
+  };
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onAdd(formData);
-    setFormData({ name: '', nationalId: '', phone: '', altPhone: '', hall: 'القاعة الرئيسية', taxNo: '' });
-    onClose();
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl shadow-lg w-full max-w-2xl overflow-hidden">
-        
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white overflow-y-auto max-h-[90%] lg:h-max rounded-xl w-full max-w-2xl">
         {/* Header */}
         <div className="p-4 border-b bg-gray-50">
-          <h3 className="text-xl font-semibold text-gray-800">إضافة عميل جديد</h3>
+          <h3 className="text-xl font-semibold">إضافة عميل جديد</h3>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-4 space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="p-4 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            
-            <div className="flex flex-col">
-              <label className="text-sm font-medium mb-1">اسم العميل *</label>
-              <input
-                type="text"
-                name="name"
-                required
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
 
-            <div className="flex flex-col">
-              <label className="text-sm font-medium mb-1">رقم الهوية</label>
-              <input
-                type="text"
-                name="nationalId"
-                value={formData.nationalId}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+            <input
+              {...register('name', { required: 'اسم العميل مطلوب' })}
+              placeholder="اسم العميل"
+              className="input border h-[40px] rounded px-2 outline-none"
+            />
+            <input
+              {...register('email', { required: 'البريد مطلوب' })}
+              placeholder="البريد الإلكتروني"
+              className="input border h-[40px] rounded px-2 outline-none"
+            />
+            <input
+              {...register('password', { required: 'كلمة المرور مطلوبة' })}
+              placeholder="كلمة المرور"
+              type="password"
+              className="input border h-[40px] rounded px-2 outline-none"
+            />
+            <input
+              {...register('phone', { required: 'رقم الجوال مطلوب' })}
+              placeholder="رقم الجوال"
+                            className="input border h-[40px] rounded px-2 outline-none"
+            />
+            <input
+              {...register('secondary_phone')}
+              placeholder="جوال آخر"
+                            className="input border h-[40px] rounded px-2 outline-none"
+            />
+            <input
+              {...register('identity_number')}
+              placeholder="رقم الهوية"
+                            className="input border h-[40px] rounded px-2 outline-none"
+            />
+            <input
+              {...register('tax_number')}
+              placeholder="الرقم الضريبي"
+                            className="input border h-[40px] rounded px-2 outline-none"
+            />
+            <input
+              {...register('wallet')}
+              placeholder="الرصيد"
+                            className="input border h-[40px] rounded px-2 outline-none"
+            />
 
-            <div className="flex flex-col">
-              <label className="text-sm font-medium mb-1">رقم الجوال *</label>
-              <input
-                type="tel"
-                name="phone"
-                required
-                value={formData.phone}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <label className="text-sm font-medium mb-1">جوال آخر</label>
-              <input
-                type="tel"
-                name="altPhone"
-                value={formData.altPhone}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <label className="text-sm font-medium mb-1">القاعة</label>
-              <select
-                name="hall"
-                value={formData.hall}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-              >
-                <option value="القاعة الرئيسية">القاعة الرئيسية</option>
-                <option value="القاعة الفرعية">القاعة الفرعية</option>
-              </select>
-            </div>
-
-            <div className="flex flex-col">
-              <label className="text-sm font-medium mb-1">الرقم الضريبي</label>
-              <input
-                type="text"
-                name="taxNo"
-                value={formData.taxNo}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
+            {/* Halls */}
+            <CustomSelect
+              control={control}
+              name="hall"
+              label="القاعة"
+              placeholder="اختر القاعة"
+              options={hallsOptions}
+              error={errors.hall?.message}
+            />
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-3 pt-2">
+          <div className="flex gap-3 pt-4">
             <button
               type="submit"
-              className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
+              disabled={isPending}
+              className="flex-1 bg-green-600 text-white py-2 rounded-lg"
             >
-              حفظ
+              {isPending ? 'جاري الحفظ...' : 'حفظ'}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-gray-300 py-2 rounded-lg hover:bg-gray-400 transition"
+              className="flex-1 bg-gray-300 py-2 rounded-lg"
             >
               إلغاء
             </button>
           </div>
-
         </form>
       </div>
     </div>

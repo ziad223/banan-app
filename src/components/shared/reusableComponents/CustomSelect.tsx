@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import * as React from "react";
 import {
@@ -47,16 +47,20 @@ export default function CustomSelect({
             value={field.value || ""} // ✅ يخليه controlled ويدعم reset
           >
             <SelectTrigger
-              className={`   py-[26px] w-full h-[58px] border bg-white px-2 outline-none ${
+              className={`w-full h-[40px] border bg-white px-2 outline-none text-right ${
                 error ? "border-red-500" : ""
-              } `}
+              }`}
             >
               <SelectValue placeholder={placeholder || "اختر..."} />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
                 {options?.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem
+                    key={option.value}
+                    value={option.value}
+                    className="text-right"
+                  >
                     {option.label}
                   </SelectItem>
                 ))}
